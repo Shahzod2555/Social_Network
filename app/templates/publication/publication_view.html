@@ -1,0 +1,102 @@
+{% extends 'main/base.html' %}
+
+{% block title %} new post {% endblock %}
+
+{% block content %}
+
+	<div class="card position-static">
+		<div class="card-header d-flex align-content-center" style="justify-content: space-between;">
+			{% if current_user.id == publication.author_publication.id %}
+			<div class=" d-flex gap-2 align-items-center">
+			<img class="round" src="{{url_for('static', filename='image/ava.svg')}}" alt="user" style="width: 30px;">
+			<a href="{{url_for('user_blueprint.profile')}}" class="m-0">{{ publication.author_publication.username }}</a>
+			</div>
+				{% else %}
+			<div class="d-flex gap-2">
+			<img class="round" src="{{url_for('static', filename='image/ava.svg')}}" alt="user" style="width: 30px;">
+				<div>
+				<a href="{{url_for('user_blueprint.user_profile', user_id=publication.author_publication.id)}}" class="m-0">{{ publication.author_publication.username }}</a>
+					<form method="POST" action="
+					{% if current_user.is_subscription(publication.author_publication) %}
+					{{ url_for('subscription_blueprint.un_subscription_user', user_id=publication.author_publication.id) }}
+					{% else %}
+					{{ url_for('subscription_blueprint.subscription_user', user_id=publication.author_publication.id) }}
+					{% endif %}">
+						{% if current_user.is_subscription(publication.author_publication) %}
+						<button type="submit" class="btn btn-link m-0 p-0 text-decoration-none" style="font-size: 14px; color: #dc3545;">Отписаться</button>
+						{% else %}
+						<button type="submit" class="btn btn-link m-0 p-0 text-decoration-none" style="font-size: 14px; color: #007bff;">Подписаться</button>
+						{% endif %}
+					</form>
+					</div>
+			</div>
+			{% endif %}
+			{% if current_user.id == publication.author_publication.id %}
+			<div>
+				<a class="d-flex align-items-center text-white text-decoration-none" data-bs-toggle="dropdown">
+					<i class="bi bi-three-dots-vertical"></i>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a class="dropdown-item" href="{{ url_for('publication_blueprint.publication_update', id_publication=publication.id)}}">Редактировать</a></li>
+					<li><a class="dropdown-item" href="{{ url_for('publication_blueprint.publication_delete', id_publication=publication.id)}}">Удалить</a></li>
+				</ul>
+			</div>
+			{% endif %}
+		</div>
+		<div class="card-body">
+			{% if publication.image %}
+			<img style="width: 100%;" src="{{ url_for('utils_blueprint.media_files', filename='publication_image_video/' + publication.image) }}" alt="{{publication.image}}">
+			{% endif %}
+			<h5 class="card-title">{{ publication.title }}</h5>
+			<p class="card-text">{{ publication.content.replace('\n', '<br>')|safe }}</p>
+		</div>
+				<div class="card-footer d-flex gap-3 align-items-center">
+			<form action="{{ url_for('like_blueprint.like', publication_id=publication.id) }}" method="POST">
+				{% if publication.id in user_likes %}
+					<button type="submit" class="unlike btn btn-outline-danger">
+						<i class="bi bi-heart-fill"></i>
+						<span>{{ publication.like_count() }}</span>
+					</button>
+				{% else %}
+					<button type="submit" class="btn btn-outline-secondary like">
+						<i class="bi bi-heart"></i>
+						<span>{{ publication.like_count() }}</span>
+					</button>
+				{% endif %}
+			</form>
+			<button class="comment btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#commentForm{{ publication.id }}">
+				<i class="bi bi-chat-dots"></i>
+				<span>{{ publication.comment_count() }}</span>
+			</button>
+			<button class="comment btn btn-outline-secondary" type="button">
+				<i class="bi bi-send"></i>
+			</button>
+		</div>
+		<div class="collapse mt-3" id="commentForm{{ publication.id }}">
+			<div class="card card-body">
+				<div style="max-height: 400px; overflow-y: auto;">
+					{% if publication.id in publication_comment %}
+					{% for comment in publication_comment[publication.id] %}
+					<p><strong>{{ comment.author_comment.username }}</strong></p>
+					<p>{{ comment.content }}</p>
+					<p class="m-0">{{comment.created_at.strftime('%d-%m-%Y %H:%M:%S') }}</p>
+					<hr>
+					{% endfor %}
+					{% else %}
+					<h5 class="p-0 m-0">Оставьте первое комментарие</h5>
+					{% endif %}
+				</div>
+				<hr>
+				<form method="post" action="{{ url_for('comment_blueprint.comment', publication_id=publication.id) }}">
+					{{ form.hidden_tag() }}
+					{{ form.content.label(class="m-1") }}
+					<div class="d-flex">
+						{{ form.content(class="form-control me-2", placeholder="Ваш комментарий") }}
+						{{ form.submit(class="btn btn-success w-25") }}
+					</div>
+				</form>
+			</div>
+		</div>
+</div>
+
+{% endblock %}

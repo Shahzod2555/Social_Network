@@ -1,0 +1,76 @@
+{% extends 'main/base.html' %}
+
+{% block title%}{{author.username}}{% endblock %}
+
+{% block content%}
+<div class="row mb-2 pb-2 border-bottom">
+    <div class="col" style="text-align: center;">
+		<img class="border border-3 m-1 p-1" style="border-color: linear-gradient(#ff7e5f, #feb47b); height: 100px; border-radius: 50%;" src="{{ url_for('utils_blueprint.media_files', filename='avatar/' + author.avatar) }}" alt="{{ author.username }}'s avatar">
+		<h3>{{author.username}}</h3>
+		{% if author.bio %}
+			<p class="m-0">{{author.bio}}</p>
+		{% endif %}
+		{% if author.first_name or author.last_name or author.middle_name %}
+			<div class="d-inline-flex gap-2">
+				{% if author.first_name %}
+					<p>{{author.first_name}}</p>
+				{% endif %}
+				{% if author.last_name %}
+					<p>{{author.last_name}}</p>
+				{% endif %}
+				{% if author.middle_name %}
+					<p>{{author.middle_name}}</p>
+				{% endif %}
+			</div>
+		{% endif %}
+    </div>
+    <div class="col">
+		<div style="height: 50%;  align-items: center;" class="row">
+			<div class="col">
+				<a style="text-align: center;" href="{{url_for('subscription_blueprint.subscriptions', user_id=author.id)}}">
+					<p>{{ subscription_count }}</p>
+					<p>Подписки</p>
+				</a>
+			</div>
+			<div class="col">
+				<a style="text-align: center;" href="{{url_for('subscription_blueprint.subscribers', user_id=author.id)}}">
+					<p>{{ subscribers_count }}</p>
+					<p>Подписчики</p>
+				</a>
+			</div>
+			<div style="text-align: center;" class="col">
+				<p>{{publication_count}}</p>
+				<p>публикации</p>
+			</div>
+		</div>
+		<div style="height: 50%; align-items: center;" class="d-flex gap-2">
+			<a class="btn btn-outline-secondary" href="{{ url_for('message_view.chat', recipient_id=author.id) }}" style="width: 100%;" role="button">Message</a>
+
+			<form style="width: 100%;" action="
+			{% if current_user.is_subscription(author) %}
+			{{ url_for('subscription_blueprint.un_subscription_user', user_id=author.id) }}
+			{% else %}
+			{{ url_for('subscription_blueprint.subscription_user', user_id=author.id) }}
+			{% endif %}" method="POST">
+				{% if current_user.is_subscription(author) %}
+				<button type="submit" style="width: 100%;" class="btn btn-danger">Отписаться</button>
+				{% else %}
+				<button type="submit" style="width: 100%;" class="btn btn-primary">Подписаться</button>
+				{% endif %}
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="d-flex pt-2 pb-2 border-bottom mb-3" style="overflow-x: auto; min-width: 100%;">
+	{% for i in range(19) %}
+	<div class="border border-3 m-1" style="min-width: 100px; padding: 7px; height: 100px; border-radius: 50%; text-align: center; align-content: center;">
+		<img style="width: 100%;" src="{{url_for('static', filename='image/ava.svg')}}" alt="{{i}}">
+	</div>
+	{% endfor %}
+</div>
+
+{% include 'publication/publication.html' %}
+
+{% endblock %}

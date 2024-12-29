@@ -1,0 +1,44 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Ваши чаты</h2>
+    <div class="list-group mt-3">
+        {% if len_chats <= 0 %}
+        <p>Ты не с кем не общался, ты изгой:)</p>
+        <p>Поздравляю!</p>
+        {% else %}
+        {% for chat_user in chats %}
+        <div class="d-flex">
+            <a href="{{ url_for('message_view.chat', recipient_id=chat_user.id) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <img src="{{ url_for('utils_blueprint.media_files', filename='avatar/' + chat_user.avatar) }}" alt="Фото" class="rounded-circle me-3" width="40" height="40">
+                    <strong>{{ chat_user.username }}</strong>
+                </div>
+            </a>
+            <button class="btn btn-danger btn-sm ms-2" onclick="deleteChat({{ chat_user.id }})">Удалить чат</button>
+            </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+
+<script>
+    const socket = io();
+
+    function deleteChat(recipientId) {
+        const confirmation = confirm("Вы уверены, что хотите удалить этот чат?");
+        if (confirmation) {
+            socket.emit('delete_chat', { 'recipient_id': recipientId });
+            window.location.reload();
+        }
+    }
+
+    socket.on('error', function(data) {
+        alert(data.error);
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Подписки{% endblock %}
+
+{% block content %}
+
+<ol class="list-group">
+    {% for subscription in user.subscription %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{{url_for('user_blueprint.user_profile', user_id=subscription.subscribers.id)}}" class="w-100">
+                <div class="ms-2 me-auto d-flex align-items-center">
+            <img class="rounded-circle me-2" width="32" height="32" src="{{ url_for('utils_blueprint.media_files', filename='avatar/' + subscription.subscribers.avatar) }}" alt="{{ subscription.subscribers.username }}'s avatar">
+                <div class="align-self-center">
+                    <div class="fw-bold">
+                {{ subscription.subscribers.username }}
+                    </div>
+                    {% if subscription.subscribers.bio %}
+                    <p style="font-size: smaller;" class="m-0">{{ subscription.subscribers.bio }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            </a>
+        </li>
+    {% else %}
+<li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+            <div class="fw-bold">
+                У тебя нету пидписок
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ol>
+
+{% endblock %}

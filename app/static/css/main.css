@@ -1,0 +1,29 @@
+@import url('fonts.css');
+
+
+body{
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+}
+
+
+.header{
+    position: sticky;
+    top: 0;
+}
+
+.content{
+    max-height: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1 1 auto;
+}
+
+a{
+    color: #dee2e6;
+    text-decoration: none;
+}
+
+hr{
+    position: sticky;
+}

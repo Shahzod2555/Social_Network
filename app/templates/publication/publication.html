@@ -1,0 +1,108 @@
+<div class="d-flex flex-column gap-3">
+    {% for publication in publications %}
+    <div class="card">
+        {% include 'publication/publication_header.html' %}
+        <div class="card-body">
+            <div class="d-flex flex-column gap-3" style="text-align: center;">
+
+                {% if publication.images %}
+                <div class="gallery-container">
+                    {% for image in publication.images %}
+                    <div class="gallery-item">
+                        <img src="{{ url_for('utils_blueprint.media_files', filename='publication_image/' + image.image) }}" alt="{{ image.image }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if publication.videos %}
+                <div class="gallery-container">
+                    {% for video in publication.videos %}
+                    <div class="gallery-item">
+                        <video controls>
+                            <source src="{{ url_for('utils_blueprint.media_files', filename='publication_video/' + video.video) }}" type="video/mp4">
+                        </video>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if publication.audios %}
+                <div class="audio-container">
+                    {% for audio in publication.audios %}
+                    <div class="audio-item">
+                        <audio controls class="w-100">
+                            <source src="{{ url_for('utils_blueprint.media_files', filename='publication_audio/' + audio.audio) }}" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="px-5">
+                <a href="{{ url_for('publication_blueprint.publication_view', id_publication=publication.id) }}">
+                    <p class="card-title fw-bold m-0">{{ publication.title }}</p>
+                    {% if publication.content %}
+                    <p class="card-text">{{ publication.content | truncate(300, False)|safe }}</p>
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+
+        {% include 'publication/publication_footer.html' %}
+        {% include 'publication/comment.html' %}
+    </div>
+    {% endfor %}
+</div>
+
+
+<style>
+/* Контейнер для галереи изображений и видео */
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Элемент галереи */
+.gallery-item {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* Соотношение 4:3 */
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Изображения и видео */
+.gallery-item img,
+.gallery-item video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Заполняет элемент, сохраняя пропорции */
+    background-color: #f0f0f0;
+}
+
+/* Контейнер для аудио */
+.audio-container {
+    max-width: 550px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Аудио элемент */
+.audio-item {
+    width: 100%;
+}
+
+audio {
+    width: 100%;
+}
+</style>

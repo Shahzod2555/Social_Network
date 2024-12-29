@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+
+{% block title %} new post {% endblock %}
+
+{% block content %}
+
+<form method="post" class="form-control m-auto">
+    {{ form.hidden_tag() }}
+    <div class="m-4">
+    {{ form.login.label }}
+    {{ form.login(class="form-control", placeholder="Логин")}}
+    </div>
+    <div class="m-4">
+    {{ form.password.label }}
+    {{ form.password(class="form-control", placeholder="Пароль")}}
+    </div>
+    <div class="m-4">
+    <p>Нету аккаунта? <a style="color: #007bff;" href="{{ url_for('reg_auth_blueprint.email_register')}}">Зарегистрироваться</a></p>
+    </div>
+    <div class="m-4">
+    {{ form.submit(class="btn btn-success w-100")}}
+    </div>
+
+</form>
+
+{% endblock %}

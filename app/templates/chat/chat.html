@@ -1,0 +1,79 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Чат с {{ recipient.username }}{% endblock %}
+
+{% block content %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+
+    <h1 class="text-center p-2">Чат с {{ recipient.username }}</h1>
+    <div class="d-grid gap-2">
+        <div id="messages" class="border rounded p-2 overflow-auto" style="max-height: 700px; height: 100%;">
+            {% for message in messages %}
+                <div class="d-flex {{ 'justify-content-end' if message.sender_id == current_user.id else 'justify-content-start' }}">
+                    <p class="m-0 p-2 text-break {{ 'text-white bg-primary' if message.sender_id == current_user.id else 'text-dark bg-light' }}"
+                       style="border-radius: 10px; {{ 'border-bottom-right-radius: 0;' if message.sender_id == current_user.id else 'border-bottom-left-radius: 0;' }}">
+                        {{ message.content }}
+                    </p>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+
+        <div class="input-group mt-3">
+            <input id="message" class="form-control" placeholder="Введите сообщение">
+            <button class="btn btn-primary" onclick="sendMessage()">Отправить</button>
+        </div>
+    </div>
+
+<script>
+    const socket = io();
+
+    function scrollToBottom() {
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function sendMessage() {
+        const messageInput = document.getElementById('message');
+        const message = messageInput.value.trim();
+
+        if (message) {
+            socket.emit('send_private_message', {
+                'recipient_id': {{ recipient.id }},
+                'message': message
+            });
+
+            const messagesDiv = document.getElementById('messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'd-flex justify-content-end';
+            msgDiv.innerHTML = `<p class="m-0 p-2 text-white bg-primary" style="border-radius: 10px; border-bottom-right-radius: 0;">${message}</p>`;
+
+            messagesDiv.appendChild(msgDiv);
+
+            const hr = document.createElement('hr');
+            messagesDiv.appendChild(hr);
+
+            messageInput.value = '';
+            scrollToBottom();
+        }
+    }
+
+    socket.on('receive_private_message', function(data) {
+        const messagesDiv = document.getElementById('messages');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'd-flex justify-content-start';
+        msgDiv.innerHTML = `<p class="m-0 p-2 text-dark bg-light" style="border-radius: 10px; border-bottom-left-radius: 0;">${data.message}</p>`;
+
+        messagesDiv.appendChild(msgDiv);
+
+        const hr = document.createElement('hr');
+        messagesDiv.appendChild(hr);
+
+        scrollToBottom();
+    });
+
+    document.addEventListener("DOMContentLoaded", scrollToBottom);
+</script>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+
+<div class="collapse mt-3" id="commentForm{{ publication.id }}">
+  <div class="card card-body">
+    <div style="max-height: 400px; overflow-y: auto;">
+      {% if publication_comment[publication.id] %}
+      {% for comment in publication_comment[publication.id] %}
+      <p><strong>{{ comment.author_comment.username }}</strong></p>
+      <p>{{ comment.content }}</p>
+      <p class="m-0" style="font-size: small;">{{comment.created_at.strftime('%d-%m-%Y %H:%M') }}</p>
+      <hr>
+      {% endfor %}
+      {% else %}
+      <h5 class="p-0 m-0">Оставьте первое комментарие</h5>
+      {% endif %}
+    </div>
+    <form method="post" action="{{ url_for('comment_blueprint.comment', publication_id=publication.id) }}">
+      {{ form.hidden_tag() }}
+      {{ form.content.label(class="m-1") }}
+      <div class="d-flex">
+        {{ form.content(class="form-control me-2", placeholder="Ваш комментарий") }}
+        {{ form.submit(class="btn btn-success w-25") }}
+      </div>
+    </form>
+  </div>
+</div>

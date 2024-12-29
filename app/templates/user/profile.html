@@ -1,0 +1,200 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+{{ author.username }}
+{% endblock %}
+
+{% block content %}
+<div class="row mb-2 pb-2 border-bottom">
+	<div class="col" style="text-align: center;">
+		<img class="border border-3 m-1 p-1 avatar-img"
+			 style="height: 100px; border-radius: 50%;"
+			 src="{{ url_for('utils_blueprint.media_files', filename='avatar/' + author.avatar) }}"
+			 alt="{{ author.username }}'s avatar">
+		<h3>{{ author.username }}</h3>
+		{% if author.first_name or author.last_name or author.middle_name %}
+		<div class="d-inline-flex gap-2">
+			{% if author.first_name %}
+			<p class="m-0">{{ author.first_name }}</p>
+			{% endif %}
+			{% if author.last_name %}
+			<p class="m-0">{{ author.last_name }}</p>
+			{% endif %}
+			{% if author.middle_name %}
+			<p class="m-0">{{ author.middle_name }}</p>
+			{% endif %}
+		</div>
+		{% endif %}
+		{% if author.bio %}
+		<p>{{ author.bio }}</p>
+		{% endif %}
+	</div>
+	<div class="col">
+		<div style="height: 50%; align-items: center;" class="row">
+			<div class="col">
+				<a style="text-align: center;" href="{{ url_for('subscription_blueprint.subscriptions', user_id=author.id) }}">
+					<p>{{ subscription_count }}</p>
+					<p>Подписки</p>
+				</a>
+			</div>
+			<div class="col">
+				<a style="text-align: center;" href="{{ url_for('subscription_blueprint.subscribers', user_id=author.id) }}">
+					<p>{{ subscribers_count }}</p>
+					<p>Подписчики</p>
+				</a>
+			</div>
+			<div class="col" style="text-align: center;">
+				<p>{{ publication_count }}</p>
+				<p>Публикации</p>
+			</div>
+		</div>
+		<div style="height: 50%; align-items: center;" class="d-flex gap-2">
+			<a class="btn btn-outline-secondary" href="{{ url_for('message_view.chat', recipient_id=author.id) }}" style="width: 100%;">Message</a>
+			<a class="btn btn-outline-secondary" href="{{ url_for('user_blueprint.update_account') }}" style="width: 100%;">Редактировать аккаунт</a>
+		</div>
+	</div>
+</div>
+
+<div class="d-flex pt-2 pb-2 border-bottom mb-3" style="overflow-x: auto; min-width: 100%;">
+	<div class="border border-3 m-1 crug">
+		<a href="{{ url_for('actual_blueprint.add_actual') }}"><img class="crug1" src="{{ url_for('static', filename='image/ava.svg') }}"></a>
+	</div>
+	{% for actual in actual_all %}
+	<div class="border border-3 m-1 crug">
+		<a data-bs-toggle="modal" data-bs-target="#mediaModal">
+			<img class="crug1" src="{{ url_for('utils_blueprint.media_files', filename='actual/' + actual.image) }}" alt="{{ actual.image }}">
+		</a>
+	</div>
+	{% endfor %}
+</div>
+
+<div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="mediaModalLabel"></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="carouselImage" class="carousel my-2 slide">
+					<div class="carousel-inner">
+						{% for a in actual_all %}
+						{% for i in a.actual_image %}
+						<div class="carousel-item {% if loop.first %}active{% endif %}">
+							{% if i.image %}
+							<img src="{{ url_for('utils_blueprint.media_files', filename='actual_image/' + i.image) }}" class="d-block w-100" alt="Изображение">
+							{% endif %}
+						</div>
+						{% endfor %}
+						{% endfor %}
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselImage" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselImage" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
+				</div>
+
+				<div id="carouselVideo" class="carousel my-2 slide">
+					<div class="carousel-inner">
+						{% for a in actual_all %}
+						{% for i in a.actual_video %}
+						<div class="carousel-item {% if loop.first %}active{% endif %}">
+							{% if i.video %}
+							<video class="d-block w-100" controls>
+								<source src="{{ url_for('utils_blueprint.media_files', filename='actual_video/' + i.video) }}" type="video/mp4">
+								Ваш браузер не поддерживает видео тег.
+							</video>
+							{% endif %}
+						</div>
+						{% endfor %}
+						{% endfor %}
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselVideo" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselVideo" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
+				</div>
+
+				<div id="carouselAudio" class="carousel my-2 slide">
+					<div class="carousel-inner">
+						{% for a in actual_all %}
+						{% for i in a.actual_audio %}
+						<div class="carousel-item {% if loop.first %}active{% endif %}">
+							{% if i.audio %}
+							<audio class="d-block w-100" controls>
+								<source src="{{ url_for('utils_blueprint.media_files', filename='actual_audio/' + i.audio) }}">
+								Ваш браузер не поддерживает видео тег.
+							</audio>
+							{% endif %}
+						</div>
+						{% endfor %}
+						{% endfor %}
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselAudio" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselAudio" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% if publications %}
+{% include 'publication/publication.html' %}
+{% endif %}
+
+<style>
+	.crug {
+        min-width: 100px;
+        padding: 7px;
+        height: 100px;
+        border-radius: 50%;
+        text-align: center;
+        align-content: center;
+    }
+    .crug1 {
+        max-width: 100px;
+        max-height: 100px;
+        width: 100%;
+        height: 100%;
+        align-content: center;
+        border-radius: 50%;
+    }
+
+    .modal-body img,
+    .modal-body video {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        max-height: 80vh; /* Ограничиваем высоту для модального окна */
+        background-color: #f0f0f0;
+    }
+
+    .carousel-item {
+        position: relative;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: black;
+        border-radius: 50%;
+    }
+
+</style>
+
+{% endblock %}

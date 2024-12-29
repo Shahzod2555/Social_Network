@@ -1,0 +1,33 @@
+<div class="card-header d-flex align-items-center" style="justify-content: space-between;">
+  {% if current_user == publication.author_publication %}
+  <div class="d-flex gap-2 align-items-center">
+    <img class="round" src="{{url_for('utils_blueprint.media_files', filename='avatar/' + publication.author_publication.avatar)}}" alt="user" style="width: 30px; border-radius: 50%;">
+    <div>
+      <a href="{{url_for('user_blueprint.profile')}}" class="m-0 fw-bold">{{ publication.author_publication.username }}</a>
+      <p class="m-0" style="font-size: small;">{{publication.updated_at.strftime('%d-%m-%Y %H:%M')}}</p>
+    </div>
+  </div>
+  <div>
+    <a class="d-flex align-items-center text-white text-decoration-none" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></a>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('publication_blueprint.publication_update', id_publication=publication.id)}}">Редактировать</a></li>
+      <li><a class="dropdown-item" href="{{ url_for('publication_blueprint.publication_delete', id_publication=publication.id)}}">Удалить</a></li>
+    </ul>
+  </div>
+  {% else %}
+  <div class="d-flex gap-2 align-items-center">
+    <img class="round" src="{{url_for('utils_blueprint.media_files', filename='avatar/' + publication.author_publication.avatar)}}" alt="user" style="width: 30px; border-radius: 50%;">
+    <div>
+      <a href="{{url_for('user_blueprint.user_profile', user_id=publication.author_publication.id)}}" class="m-0 fw-bold">{{ publication.author_publication.username }}</a>
+      <p class="m-0" style="font-size: small;">{{publication.updated_at.strftime('%d-%m-%Y %H:%M')}}</p>
+    </div>
+  </div>
+  <form method="POST" action="{% if current_user.is_subscription(publication.author_publication) %} {{ url_for('subscription_blueprint.un_subscription_user', user_id=publication.author_publication.id) }} {% else %} {{ url_for('subscription_blueprint.subscription_user', user_id=publication.author_publication.id) }} {% endif %}">
+    {% if current_user.is_subscription(publication.author_publication) %}
+    <button type="submit" class="btn btn-danger btn-sm">Отписаться</button>
+    {% else %}
+    <button type="submit" class="btn btn-success btn-sm" >Подписаться</button>
+    {% endif %}
+  </form>
+  {% endif %}
+</div>

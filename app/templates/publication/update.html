@@ -1,0 +1,51 @@
+{% extends 'main/base.html' %}
+
+{% block title %} new post {% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+<h2 class="text-center mb-4">Редактирование {{publication_id.title}}</h2>
+
+<form method="POST" enctype="multipart/form-data" class="p-4 form-control m-auto shadow-sm">
+    {{ form.hidden_tag() }}
+
+        <div class="m-4">
+            {{ form.title.label }}
+            {{ form.title(class="form-control", placeholder="Название поста", value=publication_id.title)}}
+        </div>
+        <div class="m-4">
+            {{ form.content.label }}
+            {{ form.content(class="form-control", placeholder="Статья")}}
+        </div>
+        <div class="m-4">
+            {{ form.hashtags.label }}
+            {{ form.hashtags(class="form-control", placeholder="Хештеги", value=publication_id.hashtags)}}
+        </div>
+        <div class="m-4">
+            {{ form.image.label }}
+            {{ form.image(class="form-control")}}
+        </div>
+        <div class="m-4">
+            {{ form.video.label }}
+            {{ form.video(class="form-control")}}
+        </div>
+        <div class="m-4">
+            {{ form.audio.label }}
+            {{ form.audio(class="form-control")}}
+        </div>
+        <div class="m-4">
+            {{ form.location.label }}
+            {{ form.location(class="form-control", placeholder="Название поста", value=publication_id.location)}}
+        </div>
+        <div class="m-4">
+            {{ form.mentions.label }}
+            {{ form.mentions(class="form-control", placeholder="Упоминуть пользователя", value=publication_id.mentions)}}
+        </div>
+        <div class="m-4">
+            {{ form.submit(class="btn btn-success w-100")}}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

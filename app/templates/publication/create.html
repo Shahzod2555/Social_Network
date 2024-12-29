@@ -1,0 +1,59 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Создание поста{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+<h2 class="text-center mb-4">Создание нового поста</h2>
+
+<form method="POST" enctype="multipart/form-data" class="p-4 form-control m-auto shadow-sm">
+    {{ form.hidden_tag() }}
+
+    <h5 class="mt-4">Основная информация</h5>
+    <div class="form-group mb-3">
+        <label class="form-label">{{ form.title.label }}</label>
+        {{ form.title(class="form-control", placeholder="Название поста")}}
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">{{ form.content.label }}</label>
+        {{ form.content(class="form-control", placeholder="Статья")}}
+    </div>
+
+    <h5 class="mt-4">Медиа</h5>
+    <div class="form-group mb-3">
+        <label class="form-label">{{ form.images.label }}</label>
+        {{ form.images(class="form-control", accept=".jpg,.png,.gif,.jpg,.svg,.raw,.tif,.bmp,.psd")}}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">{{ form.videos.label }}</label>
+        {{ form.videos(class="form-control", accept=".mp4,.avi,.mpeg,.wav")}}
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">{{ form.audios.label }}</label>
+        {{ form.audios(class="form-control", accept=".mp3,.wav,.midi,.wma")}}
+    </div>
+
+    <h5 class="mt-4">Дополнительная информация</h5>
+    <div class="form-group mb-3">
+        <label class="form-label">{{ form.location.label }}</label>
+        {{ form.location(class="form-control", placeholder="Введите местоположение")}}
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">{{ form.mentions.label }}</label>
+        {{ form.mentions(class="form-control", placeholder="Упомянуть пользователя")}}
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label">{{ form.hashtags.label }}</label>
+        {{ form.hashtags(class="form-control", placeholder="Хештеги")}}
+    </div>
+    <div class="form-group mb-3 d-flex gap-2">
+        {{ form.is_publication(class="form-check-input") }}
+        {{ form.is_publication.label }}
+    </div>
+    <div class="text-center mt-4">
+        {{ form.submit(class="btn btn-primary btn-lg w-100") }}
+    </div>
+</form>
+{% endblock %}
+</div>

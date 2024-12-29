@@ -1,0 +1,89 @@
+{% extends 'main/base.html' %}
+
+{% block title %} new post {% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <h2 class="text-center mb-4">Регистрация</h2>
+    <form id="registrationForm" method="post" enctype="multipart/form-data" class="p-4 form-control m-auto shadow-sm">
+    {{ form.hidden_tag() }}
+    <div class="form-group mb-3">
+        {{ form.login.label(class="form-label") }}
+        {{ form.login(class="form-control")}}
+
+        {% if form.login.errors %}
+            <div class="text-danger">
+                {% for error in form.login.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="form-group mb-3">
+        {{ form.phone.label(class="form-label") }}
+        {{ form.phone(class="form-control", id="phone")}}
+        {% if form.phone.errors %}
+            <div class="text-danger">
+                {% for error in form.phone.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="form-group mb-3">
+        {{ form.avatar.label(class="form-label") }}
+        {{ form.avatar(class="form-control")}}
+    </div>
+    <div class="form-group mb-3">
+        {{ form.password.label(class="form-label") }}
+        {{ form.password(class="form-control")}}
+
+        {% if form.password.errors %}
+            <div class="text-danger">
+                {% for error in form.password.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="form-group mb-3">
+        {{ form.confirm_password.label(class="form-label") }}
+        {{ form.confirm_password(class="form-control")}}
+
+         {% if form.confirm_password.errors %}
+            <div class="text-danger">
+                {% for error in form.confirm_password.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group mb-3">
+        <p>Есть аккаунта? <a style="color: #007bff;" href="{{ url_for('reg_auth_blueprint.login')}}">Войти</a></p>
+    </div>
+    <div class="form-group mb-3">
+        {{ form.submit(class="btn btn-success submit w-100")}}
+    </div>
+</form>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        // Применяем маску для поля ввода телефона
+        $('#phone').mask('+7 (999) 999-99-99');
+
+        // Перед отправкой формы очищаем номер телефона от символов, кроме "+"
+        $('#registrationForm').on('submit', function() {
+            var phoneNumber = $('#phone').val();
+            // Убираем все символы, кроме цифр и знака "+"
+            var cleanedNumber = phoneNumber.replace(/[^+\d]/g, '');
+            $('#phone').val(cleanedNumber);
+        });
+    });
+</script>
+{% endblock %}
